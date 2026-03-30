@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import { useState } from 'react';
@@ -20,15 +21,17 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-// ==================== DATA ====================
+/* ════════════════════════════════════════
+   TYPES
+   ════════════════════════════════════════ */
 
 interface Badge {
   label: string;
   icon: string;
-  className: string;
+  type: 'gold' | 'cyan' | 'green' | 'purple';
 }
 
-interface ProfileData {
+interface Profile {
   id: string;
   name: string;
   age: number;
@@ -41,12 +44,15 @@ interface ProfileData {
   location: string;
   rating: number;
   interests: string[];
-  coverGradient: string;
-  avatarColor: string;
-  initials: string;
+  coverUrl: string;
+  avatarUrl: string;
 }
 
-const profiles: ProfileData[] = [
+/* ════════════════════════════════════════
+   PROFILE DATA (Real Photos)
+   ════════════════════════════════════════ */
+
+const profiles: Profile[] = [
   {
     id: '1',
     name: 'Aria Chen',
@@ -55,20 +61,14 @@ const profiles: ProfileData[] = [
     pricePerHour: 21,
     isOnline: true,
     isVerified: true,
-    badges: [
-      {
-        label: 'New Member',
-        icon: '🌟',
-        className: 'border-yellow-500/30 text-yellow-400',
-      },
-    ],
+    badges: [{ label: 'New Member', icon: '🌟', type: 'gold' }],
     bio: '✨ Creative soul | Let\u0027s explore the city together and find hidden gems 🏙️',
     location: 'New York, NY',
     rating: 3.3,
     interests: ['Astronomy', 'Fashion', 'Anime', 'Climbing'],
-    coverGradient: 'bg-gradient-to-br from-indigo-950 via-purple-900 to-slate-800',
-    avatarColor: 'bg-gradient-to-br from-rose-500 to-pink-600',
-    initials: 'AC',
+    coverUrl:
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=400&fit=crop',
+    avatarUrl: 'https://i.pravatar.cc/150?img=5',
   },
   {
     id: '2',
@@ -79,24 +79,16 @@ const profiles: ProfileData[] = [
     isOnline: true,
     isVerified: true,
     badges: [
-      {
-        label: 'Super Host',
-        icon: '💎',
-        className: 'border-cyan-500/30 text-cyan-400',
-      },
-      {
-        label: 'Verified',
-        icon: '✓',
-        className: 'border-green-500/30 text-green-400',
-      },
+      { label: 'Super Host', icon: '💎', type: 'cyan' },
+      { label: 'Verified', icon: '✓', type: 'green' },
     ],
     bio: '🎮 Gamer & chill companion | Down for late night gaming sessions or coffee runs 🍵',
     location: 'Los Angeles, CA',
     rating: 4.0,
     interests: ['Crafts', 'Board Games', 'Travel', 'Photography'],
-    coverGradient: 'bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-900',
-    avatarColor: 'bg-gradient-to-br from-amber-500 to-orange-600',
-    initials: 'MR',
+    coverUrl:
+      'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&h=400&fit=crop',
+    avatarUrl: 'https://i.pravatar.cc/150?img=12',
   },
   {
     id: '3',
@@ -107,24 +99,16 @@ const profiles: ProfileData[] = [
     isOnline: true,
     isVerified: true,
     badges: [
-      {
-        label: 'Premium',
-        icon: '⭐',
-        className: 'border-yellow-500/30 text-yellow-400',
-      },
-      {
-        label: 'Verified',
-        icon: '✓',
-        className: 'border-green-500/30 text-green-400',
-      },
+      { label: 'Premium', icon: '⭐', type: 'purple' },
+      { label: 'Verified', icon: '✓', type: 'green' },
     ],
     bio: '📚 Book lover seeking adventure buddies | Let\u0027s discuss philosophy over ramen 🍜',
     location: 'Tokyo, JP',
     rating: 4.8,
     interests: ['Hiking', 'Art', 'Climbing', 'Anime'],
-    coverGradient: 'bg-gradient-to-br from-emerald-950 via-teal-900 to-slate-900',
-    avatarColor: 'bg-gradient-to-br from-violet-500 to-purple-600',
-    initials: 'LK',
+    coverUrl:
+      'https://images.unsplash.com/photo-1480796927426-f609979314bd?w=800&h=400&fit=crop',
+    avatarUrl: 'https://i.pravatar.cc/150?img=9',
   },
   {
     id: '4',
@@ -134,20 +118,14 @@ const profiles: ProfileData[] = [
     pricePerHour: 47,
     isOnline: true,
     isVerified: false,
-    badges: [
-      {
-        label: 'New Member',
-        icon: '🌟',
-        className: 'border-yellow-500/30 text-yellow-400',
-      },
-    ],
+    badges: [{ label: 'New Member', icon: '🌟', type: 'gold' }],
     bio: '🏕️ Outdoor enthusiast | Looking for hiking buddies and camping companions 🌲',
     location: 'Denver, CO',
     rating: 4.2,
     interests: ['Hiking', 'Camping', 'Photography', 'Cooking'],
-    coverGradient: 'bg-gradient-to-br from-orange-950 via-amber-900 to-slate-900',
-    avatarColor: 'bg-gradient-to-br from-emerald-500 to-green-600',
-    initials: 'JT',
+    coverUrl:
+      'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800&h=400&fit=crop',
+    avatarUrl: 'https://i.pravatar.cc/150?img=11',
   },
   {
     id: '5',
@@ -157,20 +135,14 @@ const profiles: ProfileData[] = [
     pricePerHour: 31,
     isOnline: false,
     isVerified: true,
-    badges: [
-      {
-        label: 'Super Host',
-        icon: '💎',
-        className: 'border-cyan-500/30 text-cyan-400',
-      },
-    ],
+    badges: [{ label: 'Super Host', icon: '💎', type: 'cyan' }],
     bio: '🎨 Artist & creative companion | Museums, galleries, and café hopping 🖼️',
     location: 'Seoul, KR',
     rating: 4.6,
     interests: ['Art', 'Music', 'Coffee', 'Fashion'],
-    coverGradient: 'bg-gradient-to-br from-pink-950 via-rose-900 to-slate-900',
-    avatarColor: 'bg-gradient-to-br from-sky-500 to-blue-600',
-    initials: 'SP',
+    coverUrl:
+      'https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=800&h=400&fit=crop',
+    avatarUrl: 'https://i.pravatar.cc/150?img=16',
   },
   {
     id: '6',
@@ -181,26 +153,22 @@ const profiles: ProfileData[] = [
     isOnline: true,
     isVerified: true,
     badges: [
-      {
-        label: 'Premium',
-        icon: '⭐',
-        className: 'border-yellow-500/30 text-yellow-400',
-      },
-      {
-        label: 'Verified',
-        icon: '✓',
-        className: 'border-green-500/30 text-green-400',
-      },
+      { label: 'Premium', icon: '⭐', type: 'purple' },
+      { label: 'Verified', icon: '✓', type: 'green' },
     ],
     bio: '🎸 Musician & foodie | Let\u0027s jam and try new restaurants together 🍕',
     location: 'London, UK',
     rating: 4.4,
     interests: ['Music', 'Food', 'Travel', 'Sports'],
-    coverGradient: 'bg-gradient-to-br from-cyan-950 via-blue-900 to-slate-900',
-    avatarColor: 'bg-gradient-to-br from-red-500 to-rose-600',
-    initials: 'DB',
+    coverUrl:
+      'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&h=400&fit=crop',
+    avatarUrl: 'https://i.pravatar.cc/150?img=8',
   },
 ];
+
+/* ════════════════════════════════════════
+   NAVIGATION & FILTER DATA
+   ════════════════════════════════════════ */
 
 const navItems = [
   { icon: Home, label: 'Discover', href: '/feed', active: true },
@@ -220,7 +188,28 @@ const filterTabs = [
   { label: 'Filters', isFilter: true },
 ];
 
-// ==================== COMPONENT ====================
+/* ════════════════════════════════════════
+   BADGE STYLE HELPER
+   ════════════════════════════════════════ */
+
+function getBadgeStyle(type: string) {
+  switch (type) {
+    case 'gold':
+      return 'border-yellow-500/30 text-yellow-400 bg-yellow-500/10';
+    case 'cyan':
+      return 'border-cyan-500/30 text-cyan-400 bg-cyan-500/10';
+    case 'green':
+      return 'border-green-500/30 text-green-400 bg-green-500/10';
+    case 'purple':
+      return 'border-violet-500/30 text-violet-400 bg-violet-500/10';
+    default:
+      return 'border-white/10 text-gray-400 bg-white/5';
+  }
+}
+
+/* ════════════════════════════════════════
+   FEED PAGE COMPONENT
+   ════════════════════════════════════════ */
 
 export default function FeedPage() {
   const [activeFilter, setActiveFilter] = useState('All');
@@ -242,232 +231,266 @@ export default function FeedPage() {
 
   return (
     <div className="min-h-screen bg-[#030507] text-white flex">
-      {/* ====== MOBILE MENU BUTTON ====== */}
+      {/* ═══════ MOBILE MENU BUTTON ═══════ */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-[#0d0d1a] border border-white/10 text-white"
+        className="lg:hidden fixed top-5 left-5 z-50 p-2.5 rounded-xl bg-[#0c0c18]/90 backdrop-blur-xl border border-white/10 text-white shadow-xl"
       >
-        {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+        {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
       </button>
 
-      {/* ====== MOBILE OVERLAY ====== */}
+      {/* ═══════ MOBILE OVERLAY ═══════ */}
       {sidebarOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/60 z-30"
+          className="lg:hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-30"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {/* ====== SIDEBAR ====== */}
+      {/* ═══════════════════════════════════
+          SIDEBAR
+          ═══════════════════════════════════ */}
       <aside
-        className={`fixed lg:sticky top-0 left-0 h-screen w-64 bg-[#0a0a14] border-r border-white/5 flex flex-col z-40 transition-transform duration-300 shrink-0 ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-        }`}
+        className={`
+          fixed lg:sticky top-0 left-0 h-screen z-40
+          w-[280px] shrink-0
+          bg-[#060610]/95 backdrop-blur-2xl
+          border-r border-white/[0.06]
+          flex flex-col
+          transition-transform duration-300 ease-in-out
+          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `}
       >
-        {/* Logo */}
-        <div className="p-5 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center font-bold text-sm shadow-lg shadow-violet-600/30">
+        {/* ── Logo ── */}
+        <div className="px-6 py-6 flex items-center gap-3.5">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center font-bold text-sm shadow-lg shadow-violet-500/30">
             N
           </div>
-          <span className="text-lg font-bold tracking-wide">Novara</span>
+          <span className="text-xl font-bold tracking-wide bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+            Novara
+          </span>
         </div>
 
-        {/* User Profile */}
-        <div className="px-4 py-3 mx-3 rounded-xl bg-white/[0.03] border border-white/5 flex items-center gap-3 mb-6">
-          <div className="relative">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-xs font-bold">
+        {/* ── User Card ── */}
+        <div className="mx-4 mb-8 p-4 rounded-2xl bg-gradient-to-br from-white/[0.04] to-white/[0.01] border border-white/[0.06] flex items-center gap-3.5">
+          <div className="relative shrink-0">
+            <div className="w-11 h-11 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-xs font-bold shadow-md">
               YOU
             </div>
-            <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-[#0a0a14]" />
+            <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border-[2.5px] border-[#060610]" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold">You</p>
-            <p className="text-xs text-gray-500">@your_profile</p>
+            <p className="text-sm font-semibold text-white">You</p>
+            <p className="text-xs text-gray-500 truncate">@your_profile</p>
           </div>
-          <Sparkles size={16} className="text-violet-400" />
+          <Sparkles size={16} className="text-violet-400 shrink-0" />
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 px-3 space-y-1">
+        {/* ── Navigation ── */}
+        <nav className="flex-1 px-3 space-y-1.5">
           {navItems.map((item) => (
             <Link
               key={item.label}
               href={item.href}
               onClick={() => setSidebarOpen(false)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
-                item.active
-                  ? 'bg-violet-600/15 text-violet-400 border border-violet-500/20'
-                  : 'text-gray-400 hover:bg-white/5 hover:text-white border border-transparent'
-              }`}
+              className={`
+                flex items-center gap-3.5 px-4 py-3 rounded-xl
+                text-[13.5px] font-medium
+                transition-all duration-200
+                ${
+                  item.active
+                    ? 'bg-gradient-to-r from-violet-500/15 to-violet-500/5 text-violet-400 border border-violet-500/20 shadow-sm shadow-violet-500/10'
+                    : 'text-gray-500 hover:bg-white/[0.04] hover:text-gray-200 border border-transparent'
+                }
+              `}
             >
-              <item.icon size={20} />
+              <item.icon size={19} strokeWidth={item.active ? 2.2 : 1.8} />
               <span>{item.label}</span>
             </Link>
           ))}
         </nav>
 
-        {/* Sign Out */}
-        <div className="px-3 pb-6">
-          <button className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 w-full transition-all duration-200">
-            <LogOut size={20} />
+        {/* ── Sign Out ── */}
+        <div className="px-3 pb-6 pt-4 border-t border-white/[0.04] mx-3">
+          <Link
+            href="/"
+            className="flex items-center gap-3.5 px-4 py-3 rounded-xl text-[13.5px] font-medium text-red-400/80 hover:bg-red-500/10 hover:text-red-400 transition-all duration-200"
+          >
+            <LogOut size={19} strokeWidth={1.8} />
             <span>Sign Out</span>
-          </button>
+          </Link>
         </div>
       </aside>
 
-      {/* ====== MAIN CONTENT ====== */}
+      {/* ═══════════════════════════════════
+          MAIN CONTENT
+          ═══════════════════════════════════ */}
       <main className="flex-1 min-h-screen min-w-0">
-        {/* Top Bar */}
-        <header className="sticky top-0 z-20 bg-[#030507]/80 backdrop-blur-xl border-b border-white/5">
-          <div className="px-6 py-4 flex items-center justify-between max-w-7xl mx-auto">
-            <h1 className="text-xl font-bold lg:ml-0 ml-12">Discover</h1>
-            <div className="flex items-center gap-2">
-              <button className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors duration-200">
-                <Search size={18} className="text-gray-400" />
+        {/* ── Top Header Bar ── */}
+        <header className="sticky top-0 z-20 bg-[#030507]/80 backdrop-blur-2xl border-b border-white/[0.04]">
+          <div className="px-5 sm:px-8 py-4 flex items-center justify-between max-w-[1400px] mx-auto">
+            <h1 className="text-lg font-bold text-white lg:ml-0 ml-14">
+              Discover
+            </h1>
+            <div className="flex items-center gap-2.5">
+              <button className="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] transition-all duration-200">
+                <Search size={17} className="text-gray-400" />
               </button>
-              <button className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors duration-200 relative">
-                <Bell size={18} className="text-gray-400" />
-                <div className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" />
+              <button className="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] transition-all duration-200 relative">
+                <Bell size={17} className="text-gray-400" />
+                <div className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-[#030507]" />
               </button>
             </div>
           </div>
         </header>
 
-        <div className="p-4 sm:p-6 max-w-7xl mx-auto">
-          {/* ====== DISCOVER HEADER ====== */}
-          <div className="bg-gradient-to-r from-violet-600/10 via-purple-600/5 to-transparent border border-white/5 rounded-2xl p-6 mb-6">
-            <div className="flex items-center gap-2 mb-2">
-              <Sparkles size={22} className="text-violet-400" />
-              <h2 className="text-xl font-bold">Discover People</h2>
+        <div className="px-5 sm:px-8 py-6 max-w-[1400px] mx-auto">
+          {/* ── Discover Banner ── */}
+          <div className="relative overflow-hidden rounded-2xl mb-8 p-6 sm:p-8 bg-gradient-to-r from-violet-600/[0.12] via-purple-600/[0.06] to-transparent border border-white/[0.06]">
+            {/* Decorative blur circles */}
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-violet-500/10 rounded-full blur-3xl" />
+            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl" />
+
+            <div className="relative z-10">
+              <div className="flex items-center gap-2.5 mb-2">
+                <Sparkles size={24} className="text-violet-400" />
+                <h2 className="text-xl sm:text-2xl font-bold text-white">
+                  Discover People
+                </h2>
+              </div>
+              <p className="text-gray-400 text-sm sm:text-[15px] max-w-lg">
+                Find amazing friends to hang out with. Like profiles
+                you&apos;re interested in!
+              </p>
             </div>
-            <p className="text-gray-400 text-sm">
-              Find amazing friends to hang out with. Like profiles you&apos;re
-              interested in!
-            </p>
           </div>
 
-          {/* ====== FILTER TABS ====== */}
-          <div className="flex flex-wrap gap-2 mb-8">
+          {/* ── Filter Tabs ── */}
+          <div className="flex flex-wrap gap-2.5 mb-8">
             {filterTabs.map((tab) => (
               <button
                 key={tab.label}
                 onClick={() => setActiveFilter(tab.label)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer ${
-                  activeFilter === tab.label
-                    ? 'bg-violet-600 text-white shadow-lg shadow-violet-600/25'
-                    : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 hover:text-white'
-                }`}
+                className={`
+                  flex items-center gap-2 px-5 py-2.5 rounded-xl
+                  text-[13px] font-semibold
+                  transition-all duration-200 cursor-pointer
+                  ${
+                    activeFilter === tab.label
+                      ? 'bg-violet-600 text-white shadow-lg shadow-violet-600/30 border border-violet-500/50'
+                      : 'bg-white/[0.03] text-gray-400 border border-white/[0.08] hover:bg-white/[0.06] hover:text-white hover:border-white/[0.12]'
+                  }
+                `}
               >
                 {tab.dot && (
                   <div
                     className={`w-2 h-2 rounded-full ${
                       activeFilter === tab.label
                         ? 'bg-white'
-                        : 'bg-green-500'
+                        : 'bg-emerald-500'
                     }`}
                   />
                 )}
-                {tab.isFilter && (
-                  <SlidersHorizontal
-                    size={14}
-                    className={
-                      activeFilter === tab.label
-                        ? 'text-white'
-                        : 'text-gray-400'
-                    }
-                  />
-                )}
-                {tab.emoji && <span className="text-sm">{tab.emoji}</span>}
+                {tab.isFilter && <SlidersHorizontal size={13} />}
+                {tab.emoji && <span>{tab.emoji}</span>}
                 {tab.label}
               </button>
             ))}
           </div>
 
-          {/* ====== PROFILE CARDS GRID ====== */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-            {profiles.map((profile) => (
+          {/* ══════════════════════════════
+             PROFILE CARDS GRID
+             ══════════════════════════════ */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {profiles.map((profile, index) => (
               <div
                 key={profile.id}
-                className="bg-[#0d0d1a] border border-white/5 rounded-2xl overflow-hidden hover:border-violet-500/20 transition-all duration-300 hover:shadow-xl hover:shadow-violet-500/5"
+                className="group bg-[#0c0c18] border border-white/[0.06] rounded-2xl overflow-hidden hover:border-violet-500/25 transition-all duration-500 hover:shadow-2xl hover:shadow-violet-500/[0.07] hover:-translate-y-1"
+                style={{ animationDelay: `${index * 80}ms` }}
               >
-                {/* Cover Area */}
-                <div
-                  className={`relative h-44 ${profile.coverGradient} overflow-hidden`}
-                >
-                  {/* Mountain Silhouette */}
-                  <div className="absolute bottom-0 left-0 right-0">
-                    <svg
-                      viewBox="0 0 400 60"
-                      className="w-full"
-                      preserveAspectRatio="none"
-                    >
-                      <path
-                        d="M0,60 L30,35 L60,45 L100,20 L140,40 L180,15 L220,38 L260,22 L300,42 L340,18 L380,35 L400,25 L400,60 Z"
-                        fill="rgba(0,0,0,0.3)"
-                      />
-                    </svg>
-                  </div>
+                {/* ── Cover Image ── */}
+                <div className="relative h-48 overflow-hidden">
+                  <img
+                    src={profile.coverUrl}
+                    alt={`${profile.name} cover`}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                  />
+                  {/* Dark overlay gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c18] via-[#0c0c18]/30 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-transparent" />
 
                   {/* Price Badge */}
-                  <div className="absolute top-3 left-3 bg-black/50 backdrop-blur-sm border border-white/10 rounded-lg px-2.5 py-1.5 flex items-center gap-1">
-                    <span className="text-green-400 text-xs font-bold">$</span>
-                    <span className="text-white text-sm font-bold">
+                  <div className="absolute top-3.5 left-3.5 bg-black/40 backdrop-blur-xl border border-white/[0.12] rounded-lg px-3 py-1.5 flex items-center gap-1.5">
+                    <span className="text-emerald-400 text-xs font-bold">
+                      $
+                    </span>
+                    <span className="text-white text-[13px] font-bold">
                       {profile.pricePerHour}/hr
                     </span>
                   </div>
 
-                  {/* Online Badge */}
-                  {profile.isOnline && (
-                    <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm border border-white/10 rounded-lg px-2.5 py-1.5 flex items-center gap-1.5">
-                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                      <span className="text-green-400 text-xs font-medium">
-                        Online
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Offline Badge */}
-                  {!profile.isOnline && (
-                    <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm border border-white/10 rounded-lg px-2.5 py-1.5 flex items-center gap-1.5">
-                      <div className="w-2 h-2 bg-gray-500 rounded-full" />
-                      <span className="text-gray-400 text-xs font-medium">
-                        Offline
-                      </span>
-                    </div>
-                  )}
+                  {/* Online / Offline Badge */}
+                  <div className="absolute top-3.5 right-3.5 bg-black/40 backdrop-blur-xl border border-white/[0.12] rounded-lg px-3 py-1.5 flex items-center gap-1.5">
+                    <div
+                      className={`w-2 h-2 rounded-full ${
+                        profile.isOnline
+                          ? 'bg-emerald-500 animate-pulse'
+                          : 'bg-gray-500'
+                      }`}
+                    />
+                    <span
+                      className={`text-xs font-medium ${
+                        profile.isOnline
+                          ? 'text-emerald-400'
+                          : 'text-gray-400'
+                      }`}
+                    >
+                      {profile.isOnline ? 'Online' : 'Offline'}
+                    </span>
+                  </div>
 
                   {/* Avatar */}
-                  <div className="absolute -bottom-7 left-4">
-                    <div
-                      className={`w-14 h-14 rounded-full ${profile.avatarColor} flex items-center justify-center text-white font-bold text-base border-[3px] border-[#0d0d1a] shadow-lg`}
-                    >
-                      {profile.initials}
-                    </div>
-                    {profile.isVerified && (
-                      <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center border-2 border-[#0d0d1a]">
-                        <ShieldCheck size={10} className="text-white" />
+                  <div className="absolute -bottom-8 left-5">
+                    <div className="relative">
+                      <div className="w-16 h-16 rounded-full border-[3px] border-[#0c0c18] overflow-hidden shadow-xl shadow-black/50">
+                        <img
+                          src={profile.avatarUrl}
+                          alt={profile.name}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                    )}
+                      {profile.isVerified && (
+                        <div className="absolute -bottom-0.5 -right-0.5 w-[22px] h-[22px] bg-blue-500 rounded-full flex items-center justify-center border-[2.5px] border-[#0c0c18] shadow-md">
+                          <ShieldCheck
+                            size={10}
+                            className="text-white"
+                            strokeWidth={3}
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
-                {/* Card Info */}
-                <div className="p-4 pt-10">
+                {/* ── Card Body ── */}
+                <div className="p-5 pt-12">
                   {/* Name & Age */}
                   <div className="flex items-center gap-2 mb-0.5">
-                    <h3 className="font-bold text-[15px]">{profile.name}</h3>
-                    <span className="text-gray-400 text-sm">{profile.age}</span>
+                    <h3 className="font-bold text-[15px] text-white">
+                      {profile.name}
+                    </h3>
+                    <span className="text-gray-500 text-sm">{profile.age}</span>
                   </div>
-                  <p className="text-gray-500 text-xs mb-3">
+                  <p className="text-gray-600 text-xs mb-3.5">
                     {profile.username}
                   </p>
 
                   {/* Badges */}
-                  <div className="flex flex-wrap gap-1.5 mb-3">
+                  <div className="flex flex-wrap gap-1.5 mb-3.5">
                     {profile.badges.map((badge, i) => (
                       <span
                         key={i}
-                        className={`px-2 py-0.5 rounded-md text-[11px] font-medium border bg-white/[0.03] ${badge.className}`}
+                        className={`px-2.5 py-[3px] rounded-md text-[11px] font-semibold border ${getBadgeStyle(badge.type)}`}
                       >
                         {badge.icon} {badge.label}
                       </span>
@@ -475,69 +498,80 @@ export default function FeedPage() {
                   </div>
 
                   {/* Bio */}
-                  <p className="text-gray-300 text-sm leading-relaxed mb-3 line-clamp-2">
+                  <p className="text-gray-400 text-[13px] leading-relaxed mb-4 line-clamp-2">
                     {profile.bio}
                   </p>
 
                   {/* Location & Rating */}
-                  <div className="flex items-center gap-4 mb-3 text-xs text-gray-400">
-                    <span className="flex items-center gap-1">
-                      <MapPin size={12} className="text-gray-500" />
+                  <div className="flex items-center gap-5 mb-4 text-xs">
+                    <span className="flex items-center gap-1.5 text-gray-500">
+                      <MapPin size={12} />
                       {profile.location}
                     </span>
-                    <span className="flex items-center gap-1">
+                    <span className="flex items-center gap-1 text-gray-400">
                       <Star
                         size={12}
                         className="text-yellow-500 fill-yellow-500"
                       />
-                      {profile.rating}
+                      <span className="font-semibold">{profile.rating}</span>
                     </span>
                   </div>
 
                   {/* Interests */}
-                  <div className="flex flex-wrap gap-1.5 mb-4">
+                  <div className="flex flex-wrap gap-1.5 mb-5">
                     {profile.interests.slice(0, 3).map((interest) => (
                       <span
                         key={interest}
-                        className="px-2.5 py-1 rounded-lg bg-white/5 text-gray-400 text-xs border border-white/5"
+                        className="px-3 py-1 rounded-lg bg-white/[0.04] text-gray-400 text-[11px] font-medium border border-white/[0.06]"
                       >
                         {interest}
                       </span>
                     ))}
                     {profile.interests.length > 3 && (
-                      <span className="px-2 py-1 rounded-lg bg-violet-500/10 text-violet-400 text-xs border border-violet-500/20">
+                      <span className="px-2.5 py-1 rounded-lg bg-violet-500/10 text-violet-400 text-[11px] font-semibold border border-violet-500/20">
                         +{profile.interests.length - 3}
                       </span>
                     )}
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex gap-2">
+                  <div className="flex gap-2.5">
                     <button
                       onClick={() => handleLike(profile.id)}
-                      className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer ${
-                        likedProfiles.includes(profile.id)
-                          ? 'bg-pink-600 text-white shadow-lg shadow-pink-600/25'
-                          : 'bg-white/5 text-gray-300 border border-white/10 hover:bg-pink-600/20 hover:text-pink-400 hover:border-pink-500/30'
-                      }`}
+                      className={`
+                        flex-1 flex items-center justify-center gap-2
+                        py-2.5 rounded-xl text-[13px] font-semibold
+                        transition-all duration-200 cursor-pointer
+                        ${
+                          likedProfiles.includes(profile.id)
+                            ? 'bg-gradient-to-r from-pink-600 to-rose-600 text-white shadow-lg shadow-pink-600/30 border border-pink-500/30'
+                            : 'bg-white/[0.04] text-gray-300 border border-white/[0.08] hover:bg-pink-500/15 hover:text-pink-400 hover:border-pink-500/25'
+                        }
+                      `}
                     >
                       <Heart
-                        size={16}
+                        size={15}
                         className={
-                          likedProfiles.includes(profile.id) ? 'fill-white' : ''
+                          likedProfiles.includes(profile.id)
+                            ? 'fill-white'
+                            : ''
                         }
                       />
-                      Like
+                      {likedProfiles.includes(profile.id) ? 'Liked' : 'Like'}
                     </button>
                     <button
                       onClick={() => handleSuperLike(profile.id)}
-                      className={`px-3 py-2.5 rounded-xl transition-all duration-200 cursor-pointer ${
-                        superLikedProfiles.includes(profile.id)
-                          ? 'bg-violet-600 text-white shadow-lg shadow-violet-600/25'
-                          : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-violet-600/20 hover:text-violet-400 hover:border-violet-500/30'
-                      }`}
+                      className={`
+                        px-3.5 py-2.5 rounded-xl
+                        transition-all duration-200 cursor-pointer
+                        ${
+                          superLikedProfiles.includes(profile.id)
+                            ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-lg shadow-violet-600/30 border border-violet-500/30'
+                            : 'bg-white/[0.04] text-gray-400 border border-white/[0.08] hover:bg-violet-500/15 hover:text-violet-400 hover:border-violet-500/25'
+                        }
+                      `}
                     >
-                      <Sparkles size={16} />
+                      <Sparkles size={15} />
                     </button>
                   </div>
                 </div>

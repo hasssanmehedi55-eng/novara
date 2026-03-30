@@ -1,76 +1,44 @@
 @import "tailwindcss";
 
-:root {
-  --background: #030507;
-  --foreground: #e2e8f0;
-  --card: #0a0f14;
-  --card-hover: #111921;
-  --border: #1a2332;
-  --primary: #6c5ce7;
-  --primary-hover: #7c6ff7;
-  --secondary: #00b894;
-  --accent: #fd79a8;
-  --superlike: #fdcb6e;
-  --danger: #e17055;
-  --muted: #636e72;
-  --input-bg: #0d1117;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background-color: #030507;
-  color: #e2e8f0;
-  font-family: 'Inter', system-ui, sans-serif;
+  background: #030507;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.glass {
-  background: rgba(10, 15, 20, 0.85);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(26, 35, 50, 0.5);
+::selection {
+  background: rgba(139, 92, 246, 0.3);
+  color: #ffffff;
 }
 
-.gradient-text {
-  background: linear-gradient(135deg, #6c5ce7, #fd79a8, #00b894);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* Premium Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
 }
 
-.nv-card {
-  background: #0a0f14;
-  border: 1px solid #1a2332;
-  border-radius: 20px;
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.nv-card:hover {
-  border-color: #243044;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
 }
 
-.btn-glow {
-  background: linear-gradient(135deg, #6c5ce7, #7c6ff7);
-  color: white;
-  font-weight: 600;
-  border-radius: 14px;
-  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
 }
 
-.avatar-ring {
-  background: linear-gradient(135deg, #6c5ce7, #fd79a8, #00b894);
-  padding: 3px;
-  border-radius: 9999px;
+/* Glow Animation */
+@keyframes subtleGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(139, 92, 246, 0.2);
+  }
 }
-
-.avatar-inner {
-  background: #0a0f14;
-  border-radius: 9999px;
-  overflow: hidden;
-}
-
-/* Animations */
-@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-.animate-float { animation: float 4s ease-in-out infinite; }
