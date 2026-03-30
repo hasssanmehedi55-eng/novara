@@ -49,7 +49,7 @@ interface Profile {
 }
 
 /* ════════════════════════════════════════
-   PROFILE DATA (Real Photos)
+   PROFILE DATA
    ════════════════════════════════════════ */
 
 const profiles: Profile[] = [
@@ -167,7 +167,7 @@ const profiles: Profile[] = [
 ];
 
 /* ════════════════════════════════════════
-   NAVIGATION & FILTER DATA
+   NAVIGATION & FILTERS
    ════════════════════════════════════════ */
 
 const navItems = [
@@ -189,7 +189,7 @@ const filterTabs = [
 ];
 
 /* ════════════════════════════════════════
-   BADGE STYLE HELPER
+   BADGE STYLES
    ════════════════════════════════════════ */
 
 function getBadgeStyle(type: string) {
@@ -208,7 +208,7 @@ function getBadgeStyle(type: string) {
 }
 
 /* ════════════════════════════════════════
-   FEED PAGE COMPONENT
+   MAIN COMPONENT
    ════════════════════════════════════════ */
 
 export default function FeedPage() {
@@ -261,7 +261,7 @@ export default function FeedPage() {
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
-        {/* ── Logo ── */}
+        {/* Logo */}
         <div className="px-6 py-6 flex items-center gap-3.5">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center font-bold text-sm shadow-lg shadow-violet-500/30">
             N
@@ -271,7 +271,7 @@ export default function FeedPage() {
           </span>
         </div>
 
-        {/* ── User Card ── */}
+        {/* User Card */}
         <div className="mx-4 mb-8 p-4 rounded-2xl bg-gradient-to-br from-white/[0.04] to-white/[0.01] border border-white/[0.06] flex items-center gap-3.5">
           <div className="relative shrink-0">
             <div className="w-11 h-11 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-xs font-bold shadow-md">
@@ -286,7 +286,7 @@ export default function FeedPage() {
           <Sparkles size={16} className="text-violet-400 shrink-0" />
         </div>
 
-        {/* ── Navigation ── */}
+        {/* Navigation */}
         <nav className="flex-1 px-3 space-y-1.5">
           {navItems.map((item) => (
             <Link
@@ -295,8 +295,7 @@ export default function FeedPage() {
               onClick={() => setSidebarOpen(false)}
               className={`
                 flex items-center gap-3.5 px-4 py-3 rounded-xl
-                text-[13.5px] font-medium
-                transition-all duration-200
+                text-[13.5px] font-medium transition-all duration-200
                 ${
                   item.active
                     ? 'bg-gradient-to-r from-violet-500/15 to-violet-500/5 text-violet-400 border border-violet-500/20 shadow-sm shadow-violet-500/10'
@@ -310,7 +309,7 @@ export default function FeedPage() {
           ))}
         </nav>
 
-        {/* ── Sign Out ── */}
+        {/* Sign Out */}
         <div className="px-3 pb-6 pt-4 border-t border-white/[0.04] mx-3">
           <Link
             href="/"
@@ -326,7 +325,7 @@ export default function FeedPage() {
           MAIN CONTENT
           ═══════════════════════════════════ */}
       <main className="flex-1 min-h-screen min-w-0">
-        {/* ── Top Header Bar ── */}
+        {/* Top Bar */}
         <header className="sticky top-0 z-20 bg-[#030507]/80 backdrop-blur-2xl border-b border-white/[0.04]">
           <div className="px-5 sm:px-8 py-4 flex items-center justify-between max-w-[1400px] mx-auto">
             <h1 className="text-lg font-bold text-white lg:ml-0 ml-14">
@@ -345,12 +344,10 @@ export default function FeedPage() {
         </header>
 
         <div className="px-5 sm:px-8 py-6 max-w-[1400px] mx-auto">
-          {/* ── Discover Banner ── */}
+          {/* Discover Banner */}
           <div className="relative overflow-hidden rounded-2xl mb-8 p-6 sm:p-8 bg-gradient-to-r from-violet-600/[0.12] via-purple-600/[0.06] to-transparent border border-white/[0.06]">
-            {/* Decorative blur circles */}
             <div className="absolute -top-10 -right-10 w-40 h-40 bg-violet-500/10 rounded-full blur-3xl" />
             <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl" />
-
             <div className="relative z-10">
               <div className="flex items-center gap-2.5 mb-2">
                 <Sparkles size={24} className="text-violet-400" />
@@ -365,7 +362,7 @@ export default function FeedPage() {
             </div>
           </div>
 
-          {/* ── Filter Tabs ── */}
+          {/* Filter Tabs */}
           <div className="flex flex-wrap gap-2.5 mb-8">
             {filterTabs.map((tab) => (
               <button
@@ -373,8 +370,7 @@ export default function FeedPage() {
                 onClick={() => setActiveFilter(tab.label)}
                 className={`
                   flex items-center gap-2 px-5 py-2.5 rounded-xl
-                  text-[13px] font-semibold
-                  transition-all duration-200 cursor-pointer
+                  text-[13px] font-semibold transition-all duration-200 cursor-pointer
                   ${
                     activeFilter === tab.label
                       ? 'bg-violet-600 text-white shadow-lg shadow-violet-600/30 border border-violet-500/50'
@@ -385,9 +381,7 @@ export default function FeedPage() {
                 {tab.dot && (
                   <div
                     className={`w-2 h-2 rounded-full ${
-                      activeFilter === tab.label
-                        ? 'bg-white'
-                        : 'bg-emerald-500'
+                      activeFilter === tab.label ? 'bg-white' : 'bg-emerald-500'
                     }`}
                   />
                 )}
@@ -409,28 +403,27 @@ export default function FeedPage() {
                 style={{ animationDelay: `${index * 80}ms` }}
               >
                 {/* ── Cover Image ── */}
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={profile.coverUrl}
-                    alt={`${profile.name} cover`}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-                  />
-                  {/* Dark overlay gradient */}
+                <div className="relative h-48">
+                  <div className="absolute inset-0 overflow-hidden">
+                    <img
+                      src={profile.coverUrl}
+                      alt={`${profile.name} cover`}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                    />
+                  </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c18] via-[#0c0c18]/30 to-transparent" />
                   <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-transparent" />
 
-                  {/* Price Badge */}
-                  <div className="absolute top-3.5 left-3.5 bg-black/40 backdrop-blur-xl border border-white/[0.12] rounded-lg px-3 py-1.5 flex items-center gap-1.5">
-                    <span className="text-emerald-400 text-xs font-bold">
-                      $
-                    </span>
+                  {/* Price */}
+                  <div className="absolute top-3.5 left-3.5 bg-black/40 backdrop-blur-xl border border-white/[0.12] rounded-lg px-3 py-1.5 flex items-center gap-1.5 z-10">
+                    <span className="text-emerald-400 text-xs font-bold">$</span>
                     <span className="text-white text-[13px] font-bold">
                       {profile.pricePerHour}/hr
                     </span>
                   </div>
 
-                  {/* Online / Offline Badge */}
-                  <div className="absolute top-3.5 right-3.5 bg-black/40 backdrop-blur-xl border border-white/[0.12] rounded-lg px-3 py-1.5 flex items-center gap-1.5">
+                  {/* Online Status */}
+                  <div className="absolute top-3.5 right-3.5 bg-black/40 backdrop-blur-xl border border-white/[0.12] rounded-lg px-3 py-1.5 flex items-center gap-1.5 z-10">
                     <div
                       className={`w-2 h-2 rounded-full ${
                         profile.isOnline
@@ -440,41 +433,34 @@ export default function FeedPage() {
                     />
                     <span
                       className={`text-xs font-medium ${
-                        profile.isOnline
-                          ? 'text-emerald-400'
-                          : 'text-gray-400'
+                        profile.isOnline ? 'text-emerald-400' : 'text-gray-400'
                       }`}
                     >
                       {profile.isOnline ? 'Online' : 'Offline'}
                     </span>
                   </div>
+                </div>
 
-                  {/* Avatar */}
-                  <div className="absolute -bottom-8 left-5">
-                    <div className="relative">
-                      <div className="w-16 h-16 rounded-full border-[3px] border-[#0c0c18] overflow-hidden shadow-xl shadow-black/50">
-                        <img
-                          src={profile.avatarUrl}
-                          alt={profile.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      {profile.isVerified && (
-                        <div className="absolute -bottom-0.5 -right-0.5 w-[22px] h-[22px] bg-blue-500 rounded-full flex items-center justify-center border-[2.5px] border-[#0c0c18] shadow-md">
-                          <ShieldCheck
-                            size={10}
-                            className="text-white"
-                            strokeWidth={3}
-                          />
-                        </div>
-                      )}
+                {/* ── Avatar (OUTSIDE cover) ── */}
+                <div className="relative px-5 -mt-8 z-10">
+                  <div className="relative w-fit">
+                    <div className="w-16 h-16 rounded-full border-[3px] border-[#0c0c18] overflow-hidden shadow-xl shadow-black/50">
+                      <img
+                        src={profile.avatarUrl}
+                        alt={profile.name}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
+                    {profile.isVerified && (
+                      <div className="absolute -bottom-0.5 -right-0.5 w-[22px] h-[22px] bg-blue-500 rounded-full flex items-center justify-center border-[2.5px] border-[#0c0c18] shadow-md">
+                        <ShieldCheck size={10} className="text-white" strokeWidth={3} />
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 {/* ── Card Body ── */}
-                <div className="p-5 pt-12">
-                  {/* Name & Age */}
+                <div className="p-5 pt-3">
                   <div className="flex items-center gap-2 mb-0.5">
                     <h3 className="font-bold text-[15px] text-white">
                       {profile.name}
