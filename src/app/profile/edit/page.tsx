@@ -1,293 +1,720 @@
-"use client";
+/* eslint-disable @next/next/no-img-element */
+'use client';
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { useState } from 'react';
 import {
-  ArrowLeft, Save, User, MapPin, Calendar,
-  Heart, Palette, Tag, FileText, DollarSign,
-  Check, X,
-} from "lucide-react";
-import { useAuth } from "../../../hooks/useAuth";
-import { updateUserProfile, getUserProfile } from "../../../lib/auth";
+  ChevronLeft,
+  Camera,
+  Save,
+  User,
+  MapPin,
+  DollarSign,
+  FileText,
+  Heart,
+  Globe,
+  Calendar,
+  Sparkles,
+  CheckCircle2,
+  Plus,
+  X,
+  Music,
+  Coffee,
+  Palette,
+  Dumbbell,
+  BookOpen,
+  Gamepad2,
+  UtensilsCrossed,
+  Plane,
+  Code,
+  Film,
+  Bike,
+  Cat,
+} from 'lucide-react';
+import Link from 'next/link';
 
-const interestOptions = [
-  "Gaming", "Music", "Sports", "Movies", "Travel",
-  "Photography", "Cooking", "Reading", "Anime", "Coding",
-  "Art", "Dance", "Fitness", "Coffee", "Fashion",
-  "Football", "Cricket", "Study", "Singing", "Streaming",
+/* ════════════════════════════════════════
+   AVAILABLE INTERESTS
+   ════════════════════════════════════════ */
+
+const allInterests = [
+  { label: 'Photography', icon: <Camera size={14} /> },
+  { label: 'Music', icon: <Music size={14} /> },
+  { label: 'Coffee', icon: <Coffee size={14} /> },
+  { label: 'Art', icon: <Palette size={14} /> },
+  { label: 'Fitness', icon: <Dumbbell size={14} /> },
+  { label: 'Reading', icon: <BookOpen size={14} /> },
+  { label: 'Gaming', icon: <Gamepad2 size={14} /> },
+  { label: 'Cooking', icon: <UtensilsCrossed size={14} /> },
+  { label: 'Travel', icon: <Plane size={14} /> },
+  { label: 'Coding', icon: <Code size={14} /> },
+  { label: 'Movies', icon: <Film size={14} /> },
+  { label: 'Cycling', icon: <Bike size={14} /> },
+  { label: 'Pets', icon: <Cat size={14} /> },
+  { label: 'Hiking', icon: <Sparkles size={14} /> },
 ];
 
-const genderOptions = ["Male", "Female", "Other"];
+const allLanguages = [
+  'English', 'Mandarin', 'Korean', 'Japanese', 'Spanish',
+  'French', 'German', 'Arabic', 'Hindi', 'Bangla', 'Portuguese',
+];
 
-export default function EditProfilePage() {
-  const router = useRouter();
-  const { user, isLoggedIn, isLoading } = useAuth();
-  const [mounted, setMounted] = useState(false);
+/* ════════════════════════════════════════
+   COMPONENT
+   ════════════════════════════════════════ */
+
+export default function ProfileEditPage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
-  // Form fields
-  const [displayName, setDisplayName] = useState("");
-  const [username, setUsername] = useState("");
-  const [bio, setBio] = useState("");
-  const [age, setAge] = useState("");
-  const [gender, setGender] = useState("");
-  const [location, setLocation] = useState("");
-  const [hourlyRate, setHourlyRate] = useState("");
-  const [interests, setInterests] = useState<string[]>([]);
-  const [primaryColor, setPrimaryColor] = useState("#6c5ce7");
+  /* Form States */
+  const [name, setName] = useState('Aria Chen');
+  const [username, setUsername] = useState('aria_vibes');
+  const [bio, setBio] = useState(
+    '✨ Creative soul exploring the world one city at a time. Love finding hidden gems, trying new cuisines, and having deep conversations over coffee.'
+  );
+  const [location, setLocation] = useState('New York, NY');
+  const [price, setPrice] = useState('21');
+  const [selectedInterests, setSelectedInterests] = useState<string[]>([
+    'Photography', 'Music', 'Coffee', 'Art', 'Travel',
+  ]);
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([
+    'English', 'Mandarin', 'Korean',
+  ]);
+  const [availability, setAvailability] = useState([
+    { day: 'Mon', short: 'M', available: true },
+    { day: 'Tue', short: 'T', available: true },
+    { day: 'Wed', short: 'W', available: false },
+    { day: 'Thu', short: 'T', available: true },
+    { day: 'Fri', short: 'F', available: true },
+    { day: 'Sat', short: 'S', available: true },
+    { day: 'Sun', short: 'S', available: false },
+  ]);
 
-  useEffect(() => { setMounted(true); }, []);
-
-  // Login check
-  useEffect(() => {
-    if (mounted && !isLoading && !isLoggedIn) router.push("/auth");
-  }, [mounted, isLoading, isLoggedIn, router]);
-
-  // Load existing profile
-  useEffect(() => {
-    async function loadProfile() {
-      if (user?.uid) {
-        const profile = await getUserProfile(user.uid);
-        if (profile) {
-          setDisplayName(profile.displayName || "");
-          setUsername(profile.username || "");
-          setBio(profile.bio || "");
-          setAge(profile.age ? String(profile.age) : "");
-          setGender(profile.gender || "");
-          setLocation(profile.location || "");
-          setHourlyRate(profile.hourlyRate ? String(profile.hourlyRate) : "");
-          setInterests(profile.interests || []);
-          setPrimaryColor(profile.customColors?.primary || "#6c5ce7");
-        }
-      }
-    }
-    if (mounted && user) loadProfile();
-  }, [mounted, user]);
-
-  if (!mounted || isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center animate-pulse-glow">
-          <span className="text-xl font-black text-white">N</span>
-        </div>
-      </div>
+  /* Handlers */
+  const toggleInterest = (label: string) => {
+    setSelectedInterests((prev) =>
+      prev.includes(label)
+        ? prev.filter((i) => i !== label)
+        : prev.length < 10
+          ? [...prev, label]
+          : prev
     );
-  }
-
-  if (!isLoggedIn || !user) return null;
-
-  // Toggle interest
-  const toggleInterest = (interest: string) => {
-    if (interests.includes(interest)) {
-      setInterests(interests.filter(i => i !== interest));
-    } else if (interests.length < 8) {
-      setInterests([...interests, interest]);
-    }
   };
 
-  // Save profile
-  const handleSave = async () => {
-    if (!displayName.trim()) { alert("নাম দাও!"); return; }
-    if (!age || Number(age) < 13) { alert("বয়স কমপক্ষে ১৩ হতে হবে"); return; }
+  const toggleLanguage = (lang: string) => {
+    setSelectedLanguages((prev) =>
+      prev.includes(lang)
+        ? prev.filter((l) => l !== lang)
+        : [...prev, lang]
+    );
+  };
 
+  const toggleDay = (index: number) => {
+    setAvailability((prev) =>
+      prev.map((d, i) => (i === index ? { ...d, available: !d.available } : d))
+    );
+  };
+
+  const handleSave = () => {
     setSaving(true);
-    try {
-      await updateUserProfile(user.uid, {
-        displayName: displayName.trim(),
-        username: username.trim() || "user_" + user.uid.slice(0, 8),
-        bio: bio.trim(),
-        age: Number(age),
-        gender,
-        location: location.trim(),
-        hourlyRate: Number(hourlyRate) || 0,
-        interests,
-        customColors: {
-          primary: primaryColor,
-          secondary: "#00b894",
-          accent: "#fd79a8",
-        },
-      });
+    setTimeout(() => {
+      setSaving(false);
       setSaved(true);
-      setTimeout(() => {
-        setSaved(false);
-        router.push("/profile");
-      }, 1500);
-    } catch (error) {
-      console.error(error);
-      alert("Save করতে সমস্যা হয়েছে!");
-    }
-    setSaving(false);
+      setTimeout(() => setSaved(false), 3000);
+    }, 1500);
   };
 
-  const colors = [
-    "#6c5ce7", "#fd79a8", "#00b894", "#fdcb6e",
-    "#e17055", "#0984e3", "#a29bfe", "#55efc4",
-  ];
+  /* ═══════ RENDER ═══════ */
 
   return (
-    <div className="min-h-screen bg-background pb-10">
-      {/* Top bar */}
-      <div className="nv-nav sticky top-0 z-50">
-        <div className="max-w-2xl mx-auto px-4">
-          <div className="flex items-center justify-between h-14">
-            <button onClick={() => router.push("/profile")}
-              className="flex items-center gap-2 text-muted hover:text-foreground transition cursor-pointer">
-              <ArrowLeft size={18} />
-              <span className="text-sm font-medium">Back</span>
-            </button>
-            <span className="font-bold text-foreground">Edit Profile</span>
-            <button onClick={handleSave} disabled={saving}
-              className="btn-glow px-4 py-2 text-xs flex items-center gap-1.5 disabled:opacity-50">
-              {saving ? "Saving..." : saved ? <><Check size={14} /> Saved!</> : <><Save size={14} /> Save</>}
-            </button>
+    <div style={{ minHeight: '100vh', background: '#030507', color: '#fff' }}>
+
+      {/* ═══════════════════════════════════
+          TOP BAR
+          ═══════════════════════════════════ */}
+      <div style={{
+        position: 'sticky', top: 0, zIndex: 40,
+        background: 'rgba(3, 5, 7, 0.85)', backdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
+      }}>
+        <div style={{
+          maxWidth: 700, margin: '0 auto', padding: '14px 20px',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <Link href="/profile" style={{
+              width: 38, height: 38, borderRadius: 12,
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: '#fff', textDecoration: 'none',
+              transition: 'all 0.2s',
+            }}>
+              <ChevronLeft size={20} />
+            </Link>
+            <h1 style={{ fontSize: 18, fontWeight: 700 }}>Edit Profile</h1>
           </div>
+
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            style={{
+              padding: '10px 24px', borderRadius: 12, border: 'none',
+              background: saved
+                ? 'linear-gradient(135deg, #22c55e, #16a34a)'
+                : 'linear-gradient(135deg, #7c3aed, #9333ea)',
+              color: '#fff', fontSize: 13, fontWeight: 600,
+              display: 'flex', alignItems: 'center', gap: 6,
+              cursor: saving ? 'not-allowed' : 'pointer',
+              boxShadow: saved
+                ? '0 4px 15px rgba(34, 197, 94, 0.3)'
+                : '0 4px 15px rgba(124, 58, 237, 0.3)',
+              transition: 'all 0.3s',
+            }}
+          >
+            {saving ? (
+              <div style={{
+                width: 16, height: 16,
+                border: '2px solid rgba(255,255,255,0.3)',
+                borderTopColor: '#fff', borderRadius: '50%',
+                animation: 'spin 0.8s linear infinite',
+              }} />
+            ) : saved ? (
+              <>
+                <CheckCircle2 size={15} />
+                Saved!
+              </>
+            ) : (
+              <>
+                <Save size={15} />
+                Save
+              </>
+            )}
+          </button>
         </div>
       </div>
 
-      {/* Form */}
-      <div className="max-w-2xl mx-auto px-4 mt-6 space-y-4">
+      {/* ═══════════════════════════════════
+          MAIN CONTENT
+          ═══════════════════════════════════ */}
+      <div style={{ maxWidth: 700, margin: '0 auto', padding: '24px 20px 80px' }}>
 
-        {/* Success message */}
-        {saved && (
-          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
-            className="nv-card p-4 border-secondary/30 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-secondary/15 flex items-center justify-center">
-              <Check size={16} className="text-secondary" />
+        {/* ══════════════════════════
+            COVER PHOTO
+            ══════════════════════════ */}
+        <div style={{
+          position: 'relative', height: 200, borderRadius: 20,
+          overflow: 'hidden', marginBottom: 20,
+          border: '1px solid rgba(255,255,255,0.06)',
+        }}>
+          <img
+            src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=400&fit=crop"
+            alt="Cover"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'rgba(0,0,0,0.4)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <button style={{
+              padding: '12px 24px', borderRadius: 14,
+              background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255,255,255,0.15)',
+              color: '#fff', fontSize: 13, fontWeight: 600,
+              display: 'flex', alignItems: 'center', gap: 8,
+              cursor: 'pointer', transition: 'all 0.2s',
+            }}>
+              <Camera size={16} />
+              Change Cover
+            </button>
+          </div>
+        </div>
+
+        {/* ══════════════════════════
+            AVATAR
+            ══════════════════════════ */}
+        <div style={{
+          display: 'flex', justifyContent: 'center', marginTop: -60,
+          marginBottom: 32, position: 'relative', zIndex: 10,
+        }}>
+          <div style={{ position: 'relative' }}>
+            <div style={{
+              width: 110, height: 110, borderRadius: 24,
+              border: '4px solid #030507',
+              overflow: 'hidden',
+              boxShadow: '0 8px 30px rgba(0,0,0,0.5)',
+            }}>
+              <img
+                src="https://i.pravatar.cc/300?img=5"
+                alt="Avatar"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
             </div>
-            <p className="text-sm text-secondary font-semibold">Profile saved successfully! ✅</p>
-          </motion.div>
-        )}
-
-        {/* Display Name */}
-        <div className="nv-card p-5">
-          <label className="flex items-center gap-2 text-sm font-semibold text-foreground mb-3">
-            <User size={16} className="text-primary" /> Display Name *
-          </label>
-          <input type="text" placeholder="তোমার নাম লেখো" value={displayName}
-            onChange={e => setDisplayName(e.target.value)} maxLength={30}
-            className="w-full bg-input-bg border border-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted focus:border-primary transition-all" />
-          <p className="text-xs text-muted mt-1.5">{displayName.length}/30</p>
-        </div>
-
-        {/* Username */}
-        <div className="nv-card p-5">
-          <label className="flex items-center gap-2 text-sm font-semibold text-foreground mb-3">
-            <span className="text-primary">@</span> Username
-          </label>
-          <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted">@</span>
-            <input type="text" placeholder="username" value={username}
-              onChange={e => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))} maxLength={20}
-              className="w-full bg-input-bg border border-border rounded-xl pl-8 pr-4 py-3 text-foreground placeholder:text-muted focus:border-primary transition-all" />
+            <button style={{
+              position: 'absolute', bottom: -4, right: -4,
+              width: 36, height: 36, borderRadius: 12,
+              background: 'linear-gradient(135deg, #7c3aed, #9333ea)',
+              border: '3px solid #030507',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: '#fff', cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(124, 58, 237, 0.3)',
+            }}>
+              <Camera size={14} />
+            </button>
           </div>
         </div>
 
-        {/* Bio */}
-        <div className="nv-card p-5">
-          <label className="flex items-center gap-2 text-sm font-semibold text-foreground mb-3">
-            <FileText size={16} className="text-primary" /> Bio
-          </label>
-          <textarea placeholder="নিজের সম্পর্কে কিছু লেখো..." value={bio}
-            onChange={e => setBio(e.target.value)} maxLength={150} rows={3}
-            className="w-full bg-input-bg border border-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted focus:border-primary transition-all resize-none" />
-          <p className="text-xs text-muted mt-1.5">{bio.length}/150</p>
-        </div>
+        {/* ══════════════════════════
+            BASIC INFO SECTION
+            ══════════════════════════ */}
+        <SectionCard
+          icon={<User size={18} />}
+          iconColor="#a78bfa"
+          title="Basic Information"
+        >
+          {/* Name */}
+          <InputField
+            label="Full Name"
+            value={name}
+            onChange={setName}
+            placeholder="Your full name"
+            maxLength={30}
+          />
 
-        {/* Age + Gender */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="nv-card p-5">
-            <label className="flex items-center gap-2 text-sm font-semibold text-foreground mb-3">
-              <Calendar size={16} className="text-primary" /> Age *
-            </label>
-            <input type="number" placeholder="20" value={age} min={13} max={99}
-              onChange={e => setAge(e.target.value)}
-              className="w-full bg-input-bg border border-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted focus:border-primary transition-all" />
+          {/* Username */}
+          <InputField
+            label="Username"
+            value={username}
+            onChange={setUsername}
+            placeholder="your_username"
+            prefix="@"
+            maxLength={20}
+          />
+
+          {/* Bio */}
+          <div style={{ marginBottom: 0 }}>
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              marginBottom: 8,
+            }}>
+              <label style={{ fontSize: 13, fontWeight: 600, color: '#9ca3af' }}>Bio</label>
+              <span style={{
+                fontSize: 11, fontWeight: 500,
+                color: bio.length > 180 ? '#f59e0b' : '#4b5563',
+              }}>
+                {bio.length}/200
+              </span>
+            </div>
+            <textarea
+              value={bio}
+              onChange={(e) => {
+                if (e.target.value.length <= 200) setBio(e.target.value);
+              }}
+              placeholder="Tell people about yourself..."
+              rows={4}
+              style={{
+                width: '100%', padding: '14px 16px',
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: 14, outline: 'none',
+                color: '#fff', fontSize: 14, lineHeight: 1.6,
+                resize: 'vertical', minHeight: 100,
+                transition: 'border-color 0.2s',
+              }}
+              onFocus={(e) => (e.target.style.borderColor = 'rgba(139, 92, 246, 0.4)')}
+              onBlur={(e) => (e.target.style.borderColor = 'rgba(255,255,255,0.08)')}
+            />
           </div>
+        </SectionCard>
 
-          <div className="nv-card p-5">
-            <label className="flex items-center gap-2 text-sm font-semibold text-foreground mb-3">
-              <Heart size={16} className="text-primary" /> Gender
+        {/* ══════════════════════════
+            LOCATION & PRICE
+            ══════════════════════════ */}
+        <SectionCard
+          icon={<MapPin size={18} />}
+          iconColor="#34d399"
+          title="Location & Pricing"
+        >
+          {/* Location */}
+          <InputField
+            label="Location"
+            value={location}
+            onChange={setLocation}
+            placeholder="City, Country"
+            iconLeft={<MapPin size={16} style={{ color: '#6b7280' }} />}
+          />
+
+          {/* Price */}
+          <div style={{ marginBottom: 0 }}>
+            <label style={{
+              display: 'block', fontSize: 13, fontWeight: 600,
+              color: '#9ca3af', marginBottom: 8,
+            }}>
+              Hourly Rate
             </label>
-            <div className="flex gap-2">
-              {genderOptions.map(g => (
-                <button key={g} onClick={() => setGender(g)}
-                  className={`flex-1 py-2.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
-                    gender === g
-                      ? "bg-primary text-white"
-                      : "bg-input-bg border border-border text-muted hover:text-foreground"
-                  }`}>
-                  {g}
+            <div style={{
+              display: 'flex', alignItems: 'center',
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: 14, overflow: 'hidden',
+              transition: 'border-color 0.2s',
+            }}>
+              <div style={{
+                padding: '14px 16px',
+                borderRight: '1px solid rgba(255,255,255,0.06)',
+                color: '#34d399', fontSize: 16, fontWeight: 700,
+                display: 'flex', alignItems: 'center',
+              }}>
+                <DollarSign size={18} />
+              </div>
+              <input
+                type="number"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                placeholder="0"
+                min="1"
+                max="999"
+                style={{
+                  flex: 1, padding: '14px 16px',
+                  background: 'transparent', border: 'none', outline: 'none',
+                  color: '#fff', fontSize: 18, fontWeight: 700,
+                }}
+              />
+              <div style={{
+                padding: '14px 16px',
+                borderLeft: '1px solid rgba(255,255,255,0.06)',
+                color: '#6b7280', fontSize: 13, fontWeight: 500,
+              }}>
+                per hour
+              </div>
+            </div>
+          </div>
+        </SectionCard>
+
+        {/* ══════════════════════════
+            INTERESTS
+            ══════════════════════════ */}
+        <SectionCard
+          icon={<Heart size={18} />}
+          iconColor="#f472b6"
+          title="Interests"
+          subtitle={`${selectedInterests.length}/10 selected`}
+        >
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {allInterests.map((interest) => {
+              const isSelected = selectedInterests.includes(interest.label);
+              return (
+                <button
+                  key={interest.label}
+                  onClick={() => toggleInterest(interest.label)}
+                  style={{
+                    padding: '10px 16px', borderRadius: 12,
+                    background: isSelected ? 'rgba(139, 92, 246, 0.15)' : 'rgba(255,255,255,0.03)',
+                    border: isSelected
+                      ? '1px solid rgba(139, 92, 246, 0.3)'
+                      : '1px solid rgba(255,255,255,0.06)',
+                    color: isSelected ? '#a78bfa' : '#9ca3af',
+                    fontSize: 13, fontWeight: 500,
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    cursor: 'pointer', transition: 'all 0.2s',
+                  }}
+                >
+                  <span style={{ color: isSelected ? '#a78bfa' : '#6b7280' }}>
+                    {interest.icon}
+                  </span>
+                  {interest.label}
+                  {isSelected && (
+                    <X size={12} style={{ marginLeft: 2, color: '#a78bfa' }} />
+                  )}
                 </button>
-              ))}
-            </div>
+              );
+            })}
           </div>
-        </div>
+        </SectionCard>
 
-        {/* Location */}
-        <div className="nv-card p-5">
-          <label className="flex items-center gap-2 text-sm font-semibold text-foreground mb-3">
-            <MapPin size={16} className="text-primary" /> Location
-          </label>
-          <input type="text" placeholder="Dhaka, Bangladesh" value={location}
-            onChange={e => setLocation(e.target.value)} maxLength={30}
-            className="w-full bg-input-bg border border-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted focus:border-primary transition-all" />
-        </div>
+        {/* ══════════════════════════
+            LANGUAGES
+            ══════════════════════════ */}
+        <SectionCard
+          icon={<Globe size={18} />}
+          iconColor="#22d3ee"
+          title="Languages"
+        >
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {allLanguages.map((lang) => {
+              const isSelected = selectedLanguages.includes(lang);
+              return (
+                <button
+                  key={lang}
+                  onClick={() => toggleLanguage(lang)}
+                  style={{
+                    padding: '10px 16px', borderRadius: 12,
+                    background: isSelected ? 'rgba(34, 211, 238, 0.1)' : 'rgba(255,255,255,0.03)',
+                    border: isSelected
+                      ? '1px solid rgba(34, 211, 238, 0.25)'
+                      : '1px solid rgba(255,255,255,0.06)',
+                    color: isSelected ? '#22d3ee' : '#9ca3af',
+                    fontSize: 13, fontWeight: 500,
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    cursor: 'pointer', transition: 'all 0.2s',
+                  }}
+                >
+                  {isSelected && <CheckCircle2 size={13} />}
+                  {lang}
+                </button>
+              );
+            })}
+          </div>
+        </SectionCard>
 
-        {/* Hourly Rate */}
-        <div className="nv-card p-5">
-          <label className="flex items-center gap-2 text-sm font-semibold text-foreground mb-3">
-            <DollarSign size={16} className="text-secondary" /> Hourly Rate (৳)
-          </label>
-          <input type="number" placeholder="200" value={hourlyRate} min={0}
-            onChange={e => setHourlyRate(e.target.value)}
-            className="w-full bg-input-bg border border-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted focus:border-primary transition-all" />
-          <p className="text-xs text-muted mt-1.5">প্রতি ঘণ্টায় কত টাকা চার্জ করবে</p>
-        </div>
-
-        {/* Interests */}
-        <div className="nv-card p-5">
-          <label className="flex items-center gap-2 text-sm font-semibold text-foreground mb-1">
-            <Tag size={16} className="text-primary" /> Interests
-          </label>
-          <p className="text-xs text-muted mb-3">সর্বোচ্চ ৮টা select করো ({interests.length}/8)</p>
-          <div className="flex flex-wrap gap-2">
-            {interestOptions.map(int => (
-              <button key={int} onClick={() => toggleInterest(int)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
-                  interests.includes(int)
-                    ? "bg-primary text-white"
-                    : "bg-input-bg border border-border text-muted hover:text-foreground hover:border-primary/30"
-                }`}>
-                {interests.includes(int) && <span className="mr-1">✓</span>}
-                {int}
+        {/* ══════════════════════════
+            AVAILABILITY
+            ══════════════════════════ */}
+        <SectionCard
+          icon={<Calendar size={18} />}
+          iconColor="#60a5fa"
+          title="Availability"
+          subtitle="Tap to toggle"
+        >
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
+            {availability.map((day, i) => (
+              <button
+                key={day.day}
+                onClick={() => toggleDay(i)}
+                style={{
+                  width: 64, height: 72, borderRadius: 16,
+                  background: day.available ? 'rgba(34, 197, 94, 0.1)' : 'rgba(255,255,255,0.03)',
+                  border: day.available
+                    ? '1px solid rgba(34, 197, 94, 0.25)'
+                    : '1px solid rgba(255,255,255,0.06)',
+                  display: 'flex', flexDirection: 'column',
+                  alignItems: 'center', justifyContent: 'center', gap: 8,
+                  cursor: 'pointer', transition: 'all 0.2s',
+                }}
+              >
+                <span style={{
+                  fontSize: 13, fontWeight: 600,
+                  color: day.available ? '#22c55e' : '#4b5563',
+                }}>
+                  {day.day}
+                </span>
+                <div style={{
+                  width: 8, height: 8, borderRadius: '50%',
+                  background: day.available ? '#22c55e' : '#374151',
+                  transition: 'all 0.2s',
+                }} />
               </button>
             ))}
           </div>
-        </div>
+        </SectionCard>
 
-        {/* Theme Color */}
-        <div className="nv-card p-5">
-          <label className="flex items-center gap-2 text-sm font-semibold text-foreground mb-3">
-            <Palette size={16} className="text-primary" /> Profile Color
-          </label>
-          <div className="flex gap-3">
-            {colors.map(c => (
-              <button key={c} onClick={() => setPrimaryColor(c)}
-                className={`w-9 h-9 rounded-xl transition cursor-pointer ${
-                  primaryColor === c ? "ring-2 ring-white ring-offset-2 ring-offset-card scale-110" : "hover:scale-105"
-                }`}
-                style={{ backgroundColor: c }} />
-            ))}
-          </div>
-        </div>
-
-        {/* Save Button (bottom) */}
-        <button onClick={handleSave} disabled={saving}
-          className="w-full btn-glow py-4 text-base flex items-center justify-center gap-2 disabled:opacity-50 mt-4">
-          {saving ? "Saving to Firebase..." : saved ? "✅ Saved!" : <><Save size={18} /> Save Profile</>}
+        {/* ══════════════════════════
+            BOTTOM SAVE BUTTON
+            ══════════════════════════ */}
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          style={{
+            width: '100%', padding: '16px 0', borderRadius: 16, border: 'none',
+            background: saved
+              ? 'linear-gradient(135deg, #22c55e, #16a34a)'
+              : 'linear-gradient(135deg, #7c3aed, #9333ea)',
+            color: '#fff', fontSize: 16, fontWeight: 700,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            cursor: saving ? 'not-allowed' : 'pointer',
+            boxShadow: saved
+              ? '0 8px 30px rgba(34, 197, 94, 0.3)'
+              : '0 8px 30px rgba(124, 58, 237, 0.3)',
+            transition: 'all 0.3s',
+            marginTop: 8,
+          }}
+        >
+          {saving ? (
+            <>
+              <div style={{
+                width: 20, height: 20,
+                border: '2px solid rgba(255,255,255,0.3)',
+                borderTopColor: '#fff', borderRadius: '50%',
+                animation: 'spin 0.8s linear infinite',
+              }} />
+              Saving...
+            </>
+          ) : saved ? (
+            <>
+              <CheckCircle2 size={20} />
+              Changes Saved Successfully!
+            </>
+          ) : (
+            <>
+              <Save size={20} />
+              Save Changes
+            </>
+          )}
         </button>
+
+        {/* ══════════════════════════
+            DANGER ZONE
+            ══════════════════════════ */}
+        <div style={{
+          marginTop: 32, padding: 24, borderRadius: 20,
+          background: 'rgba(239, 68, 68, 0.04)',
+          border: '1px solid rgba(239, 68, 68, 0.1)',
+        }}>
+          <h3 style={{
+            fontSize: 15, fontWeight: 700, color: '#ef4444',
+            marginBottom: 8,
+          }}>
+            Danger Zone
+          </h3>
+          <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 16, lineHeight: 1.5 }}>
+            Permanently delete your account and all associated data. This action cannot be undone.
+          </p>
+          <button style={{
+            padding: '10px 24px', borderRadius: 12,
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: '1px solid rgba(239, 68, 68, 0.2)',
+            color: '#ef4444', fontSize: 13, fontWeight: 600,
+            cursor: 'pointer', transition: 'all 0.2s',
+          }}>
+            Delete Account
+          </button>
+        </div>
+      </div>
+
+      {/* Spinner Animation */}
+      <style>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════
+   REUSABLE COMPONENTS
+   ════════════════════════════════════════ */
+
+function SectionCard({
+  icon,
+  iconColor,
+  title,
+  subtitle,
+  children,
+}: {
+  icon: React.ReactNode;
+  iconColor: string;
+  title: string;
+  subtitle?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div style={{
+      background: '#0c0c18',
+      border: '1px solid rgba(255,255,255,0.06)',
+      borderRadius: 20, padding: 24, marginBottom: 20,
+    }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        marginBottom: 20,
+      }}>
+        <h3 style={{
+          fontSize: 16, fontWeight: 700,
+          display: 'flex', alignItems: 'center', gap: 8,
+        }}>
+          <span style={{ color: iconColor }}>{icon}</span>
+          {title}
+        </h3>
+        {subtitle && (
+          <span style={{ fontSize: 12, color: '#6b7280', fontWeight: 500 }}>
+            {subtitle}
+          </span>
+        )}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function InputField({
+  label,
+  value,
+  onChange,
+  placeholder,
+  prefix,
+  maxLength,
+  iconLeft,
+}: {
+  label: string;
+  value: string;
+  onChange: (val: string) => void;
+  placeholder: string;
+  prefix?: string;
+  maxLength?: number;
+  iconLeft?: React.ReactNode;
+}) {
+  return (
+    <div style={{ marginBottom: 20 }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        marginBottom: 8,
+      }}>
+        <label style={{ fontSize: 13, fontWeight: 600, color: '#9ca3af' }}>
+          {label}
+        </label>
+        {maxLength && (
+          <span style={{
+            fontSize: 11, fontWeight: 500,
+            color: value.length > maxLength * 0.9 ? '#f59e0b' : '#4b5563',
+          }}>
+            {value.length}/{maxLength}
+          </span>
+        )}
+      </div>
+      <div style={{
+        display: 'flex', alignItems: 'center',
+        background: 'rgba(255,255,255,0.03)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        borderRadius: 14, overflow: 'hidden',
+        transition: 'border-color 0.2s',
+      }}>
+        {prefix && (
+          <div style={{
+            padding: '14px 0 14px 16px',
+            color: '#6b7280', fontSize: 14, fontWeight: 500,
+          }}>
+            {prefix}
+          </div>
+        )}
+        {iconLeft && (
+          <div style={{ paddingLeft: 16, display: 'flex', alignItems: 'center' }}>
+            {iconLeft}
+          </div>
+        )}
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => {
+            if (maxLength && e.target.value.length > maxLength) return;
+            onChange(e.target.value);
+          }}
+          placeholder={placeholder}
+          style={{
+            flex: 1, padding: prefix ? '14px 16px 14px 4px' : '14px 16px',
+            paddingLeft: iconLeft ? 10 : prefix ? 4 : 16,
+            background: 'transparent', border: 'none', outline: 'none',
+            color: '#fff', fontSize: 14,
+          }}
+          onFocus={(e) => {
+            const parent = e.target.parentElement;
+            if (parent) parent.style.borderColor = 'rgba(139, 92, 246, 0.4)';
+          }}
+          onBlur={(e) => {
+            const parent = e.target.parentElement;
+            if (parent) parent.style.borderColor = 'rgba(255,255,255,0.08)';
+          }}
+        />
       </div>
     </div>
   );
