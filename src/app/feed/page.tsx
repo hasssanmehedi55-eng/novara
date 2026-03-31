@@ -172,11 +172,11 @@ const profiles: Profile[] = [
 
 const navItems = [
   { icon: Home, label: 'Discover', href: '/feed', active: true },
-  { icon: Heart, label: 'Matches', href: '/feed', active: false },
-  { icon: MessageCircle, label: 'Messages', href: '/feed', active: false },
-  { icon: Bell, label: 'Notifications', href: '/feed', active: false },
+  { icon: Heart, label: 'Matches', href: '/matches', active: false },
+  { icon: MessageCircle, label: 'Messages', href: '/messages', active: false },
+  { icon: Bell, label: 'Notifications', href: '/notifications', active: false },
   { icon: User, label: 'Profile', href: '/profile', active: false },
-  { icon: Settings, label: 'Settings', href: '/feed', active: false },
+   { icon: Settings, label: 'Settings', href: '/settings', active: false },
 ];
 
 const filterTabs = [
